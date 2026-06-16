@@ -3,9 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
     <title>Reverse Game</title>
-
     <link rel="stylesheet" href="style.css" />
   </head>
 
@@ -22,11 +20,8 @@
         Font:
         <select id="fontPicker">
           <option value="Arial">Arial</option>
-
           <option value="Verdana">Verdana</option>
-
           <option value="Courier New">Courier</option>
-
           <option value="Georgia">Georgia</option>
         </select>
       </label>
@@ -36,7 +31,16 @@
 
     <div id="board"></div>
 
-    <button id="restart">Restart</button>
+    <div class="stats">
+      <span>Wins: <b id="stat-wins">0</b></span>
+      <span>Losses: <b id="stat-losses">0</b></span>
+      <span>Draws: <b id="stat-draws">0</b></span>
+    </div>
+
+    <div class="buttons">
+      <button id="restart">Restart</button>
+      <button id="resetStats">Reset Stats</button>
+    </div>
 
     <script src="script.js"></script>
   </body>

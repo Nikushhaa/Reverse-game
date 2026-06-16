@@ -117,9 +117,30 @@ select {
   box-shadow: inset -5px -5px 10px rgba(0, 0, 0, 0.2);
 }
 
-button {
-  margin-top: 25px;
+.stats {
+  display: flex;
+  gap: 30px;
 
+  margin-top: 20px;
+
+  background: rgba(255, 255, 255, 0.1);
+
+  padding: 12px 30px;
+
+  border-radius: 12px;
+
+  font-size: 18px;
+}
+
+.buttons {
+  display: flex;
+  gap: 15px;
+
+  margin-top: 15px;
+  margin-bottom: 30px;
+}
+
+button {
   padding: 12px 35px;
 
   border: none;
@@ -138,8 +159,6 @@ button {
 button:hover {
   background: #0ea5e9;
 }
-
-/* თუ გინდა სურათების გამოყენება */
 
 .piece img {
   width: 100%;

@@ -28,8 +28,16 @@ const PROP_FONT_FAMILY = "fontFamily";
 
 const STORAGE_BG = "reversi_bg";
 const STORAGE_FONT = "reversi_font";
+const STORAGE_WINS = "reversi_wins";
+const STORAGE_LOSSES = "reversi_losses";
+const STORAGE_DRAWS = "reversi_draws";
 
-const COOKIE_DAYS = 30; // cookie რამდენ დღეს იარსებებს
+const ELEM_WINS = "stat-wins";
+const ELEM_LOSSES = "stat-losses";
+const ELEM_DRAWS = "stat-draws";
+const ELEM_RESET_STATS = "resetStats";
+
+const COOKIE_DAYS = 30;
 
 const AI_DELAY_MS = 400;
 
@@ -39,18 +47,31 @@ const AI_DELAY_MS = 400;
 
 function setCookie(name, value, days) {
   const expires = new Date();
-  expires.setDate(expires.getDate() + days); // ვთვლით გასვლის თარიღს
+  expires.setDate(expires.getDate() + days);
   document.cookie = `${name}=${encodeURIComponent(value)};expires=${expires.toUTCString()};path=/`;
 }
 
 function getCookie(name) {
-  const cookies = document.cookie.split(";"); // ყველა cookie-ს ვყოფთ
+  const cookies = document.cookie.split(";");
   for (let cookie of cookies) {
     const [key, val] = cookie.trim().split("=");
-    if (key === name) return decodeURIComponent(val); // ვიპოვეთ სახელი, ვაბრუნებთ მნიშვნელობას
+    if (key === name) return decodeURIComponent(val);
   }
-  return null; // ვერ ვიპოვეთ
+  return null;
 }
+
+// ==============================
+// Stats
+// ==============================
+
+function updateStats() {
+  document.getElementById(ELEM_WINS).textContent = getCookie(STORAGE_WINS) || 0;
+  document.getElementById(ELEM_LOSSES).textContent =
+    getCookie(STORAGE_LOSSES) || 0;
+  document.getElementById(ELEM_DRAWS).textContent =
+    getCookie(STORAGE_DRAWS) || 0;
+}
+
 const MINIMAX_DEPTH = 3;
 const CORNER_BONUS = 50;
 
@@ -320,9 +341,25 @@ class Board {
       }
     }
 
-    if (black > white) this.status.textContent = STATUS_BLACK_WINS;
-    else if (white > black) this.status.textContent = STATUS_WHITE_WINS;
-    else this.status.textContent = STATUS_DRAW;
+    let wins = parseInt(getCookie(STORAGE_WINS)) || 0;
+    let losses = parseInt(getCookie(STORAGE_LOSSES)) || 0;
+    let draws = parseInt(getCookie(STORAGE_DRAWS)) || 0;
+
+    if (black > white) {
+      this.status.textContent = STATUS_BLACK_WINS;
+      wins++;
+      setCookie(STORAGE_WINS, wins, COOKIE_DAYS);
+    } else if (white > black) {
+      this.status.textContent = STATUS_WHITE_WINS;
+      losses++;
+      setCookie(STORAGE_LOSSES, losses, COOKIE_DAYS);
+    } else {
+      this.status.textContent = STATUS_DRAW;
+      draws++;
+      setCookie(STORAGE_DRAWS, draws, COOKIE_DAYS);
+    }
+
+    updateStats();
   }
 
   restart() {
@@ -343,7 +380,6 @@ class Board {
 document.addEventListener("DOMContentLoaded", () => {
   const board = new Board(document.getElementById(ELEM_BOARD));
 
-  // შენახული კონფიგურაციის ჩატვირთვა cookie-დან გვერდის გახსნისას
   const savedBg = getCookie(STORAGE_BG);
   const savedFont = getCookie(STORAGE_FONT);
 
@@ -357,16 +393,25 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById(ELEM_FONT_PICKER).value = savedFont;
   }
 
+  updateStats();
+
   document.getElementById(ELEM_RESTART).onclick = () => board.restart();
 
   document.getElementById(ELEM_BG_PICKER).oninput = (e) => {
     document.body.style[PROP_BACKGROUND] = e.target.value;
-    setCookie(STORAGE_BG, e.target.value, COOKIE_DAYS); // ვინახავთ cookie-ში
+    setCookie(STORAGE_BG, e.target.value, COOKIE_DAYS);
   };
 
   document.getElementById(ELEM_FONT_PICKER).onchange = (e) => {
     document.body.style[PROP_FONT_FAMILY] = e.target.value;
-    setCookie(STORAGE_FONT, e.target.value, COOKIE_DAYS); // ვინახავთ cookie-ში
+    setCookie(STORAGE_FONT, e.target.value, COOKIE_DAYS);
+  };
+
+  document.getElementById(ELEM_RESET_STATS).onclick = () => {
+    setCookie(STORAGE_WINS, 0, COOKIE_DAYS);
+    setCookie(STORAGE_LOSSES, 0, COOKIE_DAYS);
+    setCookie(STORAGE_DRAWS, 0, COOKIE_DAYS);
+    updateStats();
   };
 
   window.board = board;

@@ -29,7 +29,28 @@ const PROP_FONT_FAMILY = "fontFamily";
 const STORAGE_BG = "reversi_bg";
 const STORAGE_FONT = "reversi_font";
 
+const COOKIE_DAYS = 30; // cookie რამდენ დღეს იარსებებს
+
 const AI_DELAY_MS = 400;
+
+// ==============================
+// Cookie Helper Functions
+// ==============================
+
+function setCookie(name, value, days) {
+  const expires = new Date();
+  expires.setDate(expires.getDate() + days); // ვთვლით გასვლის თარიღს
+  document.cookie = `${name}=${encodeURIComponent(value)};expires=${expires.toUTCString()};path=/`;
+}
+
+function getCookie(name) {
+  const cookies = document.cookie.split(";"); // ყველა cookie-ს ვყოფთ
+  for (let cookie of cookies) {
+    const [key, val] = cookie.trim().split("=");
+    if (key === name) return decodeURIComponent(val); // ვიპოვეთ სახელი, ვაბრუნებთ მნიშვნელობას
+  }
+  return null; // ვერ ვიპოვეთ
+}
 const MINIMAX_DEPTH = 3;
 const CORNER_BONUS = 50;
 
@@ -322,9 +343,9 @@ class Board {
 document.addEventListener("DOMContentLoaded", () => {
   const board = new Board(document.getElementById(ELEM_BOARD));
 
-  // შენახული კონფიგურაციის ჩატვირთვა გვერდის გახსნისას
-  const savedBg = localStorage.getItem(STORAGE_BG);
-  const savedFont = localStorage.getItem(STORAGE_FONT);
+  // შენახული კონფიგურაციის ჩატვირთვა cookie-დან გვერდის გახსნისას
+  const savedBg = getCookie(STORAGE_BG);
+  const savedFont = getCookie(STORAGE_FONT);
 
   if (savedBg) {
     document.body.style[PROP_BACKGROUND] = savedBg;
@@ -340,12 +361,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
   document.getElementById(ELEM_BG_PICKER).oninput = (e) => {
     document.body.style[PROP_BACKGROUND] = e.target.value;
-    localStorage.setItem(STORAGE_BG, e.target.value); // ვინახავთ არჩეულ ფერს
+    setCookie(STORAGE_BG, e.target.value, COOKIE_DAYS); // ვინახავთ cookie-ში
   };
 
   document.getElementById(ELEM_FONT_PICKER).onchange = (e) => {
     document.body.style[PROP_FONT_FAMILY] = e.target.value;
-    localStorage.setItem(STORAGE_FONT, e.target.value); // ვინახავთ არჩეულ შრიფტს
+    setCookie(STORAGE_FONT, e.target.value, COOKIE_DAYS); // ვინახავთ cookie-ში
   };
 
   window.board = board;

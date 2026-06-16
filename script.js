@@ -26,6 +26,9 @@ const STATUS_DRAW = "Draw!";
 const PROP_BACKGROUND = "background";
 const PROP_FONT_FAMILY = "fontFamily";
 
+const STORAGE_BG = "reversi_bg";
+const STORAGE_FONT = "reversi_font";
+
 const AI_DELAY_MS = 400;
 const MINIMAX_DEPTH = 3;
 const CORNER_BONUS = 50;
@@ -319,14 +322,30 @@ class Board {
 document.addEventListener("DOMContentLoaded", () => {
   const board = new Board(document.getElementById(ELEM_BOARD));
 
+  // შენახული კონფიგურაციის ჩატვირთვა გვერდის გახსნისას
+  const savedBg = localStorage.getItem(STORAGE_BG);
+  const savedFont = localStorage.getItem(STORAGE_FONT);
+
+  if (savedBg) {
+    document.body.style[PROP_BACKGROUND] = savedBg;
+    document.getElementById(ELEM_BG_PICKER).value = savedBg;
+  }
+
+  if (savedFont) {
+    document.body.style[PROP_FONT_FAMILY] = savedFont;
+    document.getElementById(ELEM_FONT_PICKER).value = savedFont;
+  }
+
   document.getElementById(ELEM_RESTART).onclick = () => board.restart();
 
   document.getElementById(ELEM_BG_PICKER).oninput = (e) => {
     document.body.style[PROP_BACKGROUND] = e.target.value;
+    localStorage.setItem(STORAGE_BG, e.target.value); // ვინახავთ არჩეულ ფერს
   };
 
   document.getElementById(ELEM_FONT_PICKER).onchange = (e) => {
     document.body.style[PROP_FONT_FAMILY] = e.target.value;
+    localStorage.setItem(STORAGE_FONT, e.target.value); // ვინახავთ არჩეულ შრიფტს
   };
 
   window.board = board;

@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Reverse Game</title>
+
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body>
+    <h1>Reverse</h1>
+
+    <div class="settings">
+      <label>
+        Background:
+        <input type="color" id="bgPicker" />
+      </label>
+
+      <label>
+        Font:
+        <select id="fontPicker">
+          <option value="Arial">Arial</option>
+
+          <option value="Verdana">Verdana</option>
+
+          <option value="Courier New">Courier</option>
+
+          <option value="Georgia">Georgia</option>
+        </select>
+      </label>
+    </div>
+
+    <h2 id="status">Turn: Black</h2>
+
+    <div id="board"></div>
+
+    <button id="restart">Restart</button>
+
+    <script src="script.js"></script>
+  </body>
+</html>
